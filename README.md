@@ -23,6 +23,6 @@ You can view install instruction [here](http://nsq.io/deployment/installing.html
 
 After everythings is ok, you can run
 ```
-bin/realtime_im
+bin/im
 ```
 This command will start a sockjs server.

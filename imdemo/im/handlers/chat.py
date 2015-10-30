@@ -13,7 +13,8 @@ import ujson
 
 from sockjs.tornado import SockJSRouter
 
-from imdemo.common.const import CLIENT_IDENTIFY
+from imdemo.common.cache.cache import rclient
+from imdemo.common.const import ErrorCode, RedisKeys
 
 from .base import BaseSockJSConnection
 
@@ -30,13 +31,30 @@ class ChatHandler(BaseSockJSConnection):
     def on_open(self, session):
         """You can do validate client info here.
 
-        Validate client info via session:
-        >>> cookie = session.get_cookie('cookie key')
-        >>> is_validate_user(cookie)
+        Validate client info via token from querystring:
+        >>> token = self.get_argument("token")
+        >>> if not (cookie)
         """
-        # Validate firstly.
-        self.add_client("a")
-        logger.info("client online")
+        token = self.get_argument("token")
+        _id = self.get_argument("id")
+        if not token or not _id:
+            self.send_error(ErrorCode.BAD_REQUEST,
+                            "Unauthorized connection.")
+            self.close()
+        else:
+            key = RedisKeys.USER_TOKEN_KEY.format(token=token)
+            user_id = rclient.get(key)
+
+            if _id != user_id:
+                self.send_error(ErrorCode.BAD_REQUEST,
+                                "Unauthorized connection.")
+                self.close()
+
+            # There may be database query to get group id.
+
+            self.current_user_id = user_id
+            self.add_client(user_id)
+        logger.info("user {} online".format(user_id))
 
     def on_message(self, payload):
         """Register message event callback function.
@@ -53,13 +71,12 @@ class ChatHandler(BaseSockJSConnection):
             self.close()
 
         # Get group id, we can use it to boardcast.
-        group_id = tmp.get("group_id", -1)
-        key = CLIENT_IDENTIFY.format(group_id=group_id, user_id=receiver_id)
-        if self.has_client(key):
-            client = self.get_clients(key)
+        if self.has_client(receiver_id):
+            client = self.get_clients(receiver_id)
             if client:
                 client.send(tmp["payload"])
-                logger.info("send message to client")
+                logger.info("send message from {} to {}".format(
+                    self.current_user_id, receiver_id))
         else:
             # Send message to nsq server.
             self.publish_to_nsq(payload)
@@ -68,8 +85,8 @@ class ChatHandler(BaseSockJSConnection):
     def on_close(self):
         """Remove client info from clients.
         """
-        self.remove_client("a")
-        logger.info("client offline")
+        self.remove_client(self.current_user_id)
+        logger.info("user {} offline".format(self.current_user_id))
 
 
 ChatRouter = SockJSRouter(ChatHandler, '/chat')

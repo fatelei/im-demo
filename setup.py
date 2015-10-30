@@ -15,13 +15,14 @@ setup(
         "pony",
         "pymysql",
         "pynsq",
+        "redis",
         "sockjs-tornado",
         "tornado",
         "ujson"
     ],
     entry_points={
         "console_scripts": [
-            "realtime_im=imdemo.im.app:run",
+            "im=imdemo.im.app:run",
             "im_apis=imdemo.apis.app:app"
         ]
     }

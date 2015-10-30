@@ -7,6 +7,7 @@
 """
 
 import functools
+import ujson
 
 from sockjs.tornado import SockJSConnection
 from nsq import Error
@@ -61,3 +62,25 @@ class BaseSockJSConnection(SockJSConnection):
         :return: SockJS Session object or None.
         """
         return clients.get_client(key)
+
+    def get_argument(self, key, default=None):
+        """Get value from query string by key.
+
+        :param str key
+        :return: A value.
+        """
+        value = self.session.conn_info.arguments.get(key, [])
+        if value:
+            return value[0]
+        else:
+            return default
+
+    def send_error(self, code, msg):
+        """Send error to client.
+
+        :param object session: SockJS Session object
+        """
+        self.send(ujson.dumps({
+            "err": code,
+            "msg": msg
+        }))
