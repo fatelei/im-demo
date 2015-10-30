@@ -1,0 +1,11 @@
+# buildout
+eggs
+develop-eggs
+*.egg-info
+parts
+bin
+.installed.cfg
+
+# python
+*.pyc
+
