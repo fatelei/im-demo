@@ -102,7 +102,7 @@ bin/im
 bin/im_apis
 ```
 
-#####　You can via environment setting by
+#####　You can debug flask service, via environment setting by
 
 ```
 DEBUG=flask bin/im_apis
