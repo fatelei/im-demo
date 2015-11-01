@@ -7,13 +7,22 @@
 """
 
 __all__ = [
-    "NSQ_INBOX_TOPIC"
+    "ErrorCode",
+    "NsqTopic",
+    "NsqConfig",
+    "RedisKeys"
 ]
 
-NSQ_INBOX_TOPIC = "inbox"  # Inbox topic name.
 
-NSQ_LOOKUP_ADDRESS = "http://127.0.01:4161"
-NSQD_ADDREESS = "127.0.0.1:4150"
+class NsqTopic(object):
+
+    NSQ_INBOX_TOPIC = "inbox"
+
+
+class NsqConfig(object):
+
+    NSQ_LOOKUP_ADDRESS = "http://127.0.01:4161"
+    NSQD_ADDREESS = "127.0.0.1:4150"
 
 
 class ErrorCode(object):

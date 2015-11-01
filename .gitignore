@@ -9,3 +9,5 @@ bin
 # python
 *.pyc
 
+# nsq
+*.dat

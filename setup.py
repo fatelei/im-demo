@@ -23,7 +23,7 @@ setup(
     entry_points={
         "console_scripts": [
             "im=imdemo.im.app:run",
-            "im_apis=imdemo.apis.app:app"
+            "im_apis=imdemo.apis.app:run"
         ]
     }
 )

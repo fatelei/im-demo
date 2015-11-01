@@ -12,7 +12,7 @@ import ujson
 from sockjs.tornado import SockJSConnection
 from nsq import Error
 
-from imdemo.common.const import NSQ_INBOX_TOPIC
+from imdemo.common.const import NsqTopic
 from imdemo.common.mq.producer import nsq_producer
 from imdemo.im.store.clients import clients
 
@@ -29,7 +29,7 @@ class BaseSockJSConnection(SockJSConnection):
         :param str topic: Topic name
         :param str payload: Message body
         """
-        topic = topic or NSQ_INBOX_TOPIC
+        topic = topic or NsqTopic.NSQ_INBOX_TOPIC
         callback = functools.partial(
             self.publish_callback, topic=topic, msg=payload)
         nsq_producer.pub(topic, payload, callback)

@@ -6,10 +6,12 @@
     Nsq consumer.
 """
 
+import logging
 import ujson
 
-from imdemo.common.const import CLIENT_IDENTIFY
 from imdemo.im.store.clients import clients
+
+logger = logging.getLogger(__name__)
 
 
 def handle_boardcast_message(message):
@@ -18,14 +20,24 @@ def handle_boardcast_message(message):
     :param nsq.message.Message message
     :return: A boolean value.
     """
-    tmp = ujson.loads(message.body)
-    group_id = tmp.get("group_id", -1)
-    user_id = tmp.get("user_id")
-    key = CLIENT_IDENTIFY.format(group_id=group_id, user_id=user_id)
+    try:
+        logger.info("process message in nsq consumer")
+        tmp = ujson.loads(message.body)
+        # group_id = tmp.get("group_id", -1)
+        sender_id = tmp["sender_id"]
+        receiver_id = tmp["receiver_id"]
+        content = tmp["payload"]
 
-    if clients.has_client(key):
-        client = clients.get_client(key)
-        if client:
-            client.send(tmp["payload"])
+        # Send via sockjs.
+        if clients.has_client(receiver_id):
+            client = clients.get_client(receiver_id)
+            if client:
+                client.send(content)
+                logger.info("send via sockjs by nsq consumer {0}:{1}".format(
+                    sender_id, receiver_id))
 
-    return True
+        return True
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        logger.error(message.body)
+        return False

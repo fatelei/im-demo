@@ -8,7 +8,7 @@
 
 import nsq
 
-from imdemo.common.const import NSQD_ADDREESS
+from imdemo.common.const import NsqConfig
 
 # TODO Should be lasy.
-nsq_producer = nsq.Writer([NSQD_ADDREESS])
+nsq_producer = nsq.Writer([NsqConfig.NSQD_ADDREESS])
