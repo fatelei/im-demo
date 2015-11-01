@@ -32,7 +32,7 @@ Response
 }
 ```
 
-#### GET  /inbox/<thread_id>
+#### GET  /inbox/thread_id
 
 Get detail message in a thread.
 
@@ -56,7 +56,7 @@ Response:
 }
 ```
 
-#### PUT /inbox/<thread_id>
+#### PUT /inbox/thread_id
 
 Set thread status to read.
 
