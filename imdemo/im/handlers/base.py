@@ -69,11 +69,8 @@ class BaseSockJSConnection(SockJSConnection):
         :param str key
         :return: A value.
         """
-        value = self.session.conn_info.arguments.get(key, [])
-        if value:
-            return value[0]
-        else:
-            return default
+        value = self.session.get_argument(key)
+        return value if value else default
 
     def send_error(self, code, msg):
         """Send error to client.

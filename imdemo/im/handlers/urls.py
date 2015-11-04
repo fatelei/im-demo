@@ -6,7 +6,11 @@
     Handlers' urls
 """
 
+__all__ = ["urls"]
+
+from .benchmark import BenchmarkRouter
 from .chat import ChatRouter
 
 
 urls = [] + ChatRouter.urls
+urls += BenchmarkRouter.urls
