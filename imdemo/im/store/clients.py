@@ -43,5 +43,8 @@ class Clients(object):
         """
         self.clients.pop(key)
 
+    def __len__(self):
+        return len(self.clients.keys())
+
 
 clients = Clients()
